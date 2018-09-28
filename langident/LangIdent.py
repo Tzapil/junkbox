@@ -1,6 +1,7 @@
 ﻿class LanguageIdent:
-    def __init__(self, file_name):
+    def __init__(self, file_name, length=2):
         #получаем переданный файл, отправляем его в функцию  build_dictionaries
+        self.length = length
         self.sprachprofil = self.build_dictionaries(file_name)
 
     def build_dictionaries(self, names_file):
@@ -16,15 +17,15 @@
     def trigrams_count(self, text):
         trigrams = {}
         #полученный текстовый файлик разбиваем на буквы, чтобы по ним считать н-граммы
-        chars_only = list(text)
         #тут в цикле считаются биграммы. Можно триграммы, но биграммы пока лучше всего классифицируют
-        for i in range(0, len(chars_only)-1):
-            if tuple(chars_only[i:i + 2]) not in trigrams.keys():
+        for i in range(0, len(text) - self.length + 1):
+            key = text[i:i + self.length]
+            if key not in trigrams.keys():
                 #если биграммы еще нет в trigrams, число ее повторений 1
-                trigrams[tuple(chars_only[i:i + 2])] = 1
+                trigrams[key] = 1
             else:
                 # если такая биграмма уже есть trigrams, прибавляем к числу повторений 1
-                trigrams[tuple(chars_only[i:i + 2])] += 1
+                trigrams[key] += 1
                 # возвращаем словарик с биграммами
         return trigrams
 
@@ -35,13 +36,13 @@
         new_profil = sorted(trigs, key=trigs.__getitem__, reverse=True)
         results = {}
         # тут сравниваем н-граммы новой строки и нграммами каждого языка...
-        for item in self.sprachprofil.items():
-            old_profil = sorted(item[1], key=item[1].__getitem__, reverse=True)
+        for key, value in self.sprachprofil.items():
+            old_profil = sorted(value, key=value.__getitem__, reverse=True)
             #...для этого вызываем функцию compare
-            results[item[0]] = self.compare(new_profil, old_profil)
+            results[key] = self.compare(new_profil, old_profil)
         resulting_language = min(results, key=results.get)
         #выигрывает язык у которого разница с новой полученной строкой(ее нграммами) меньше всего
-        return resulting_language[: resulting_language.find('.')]
+        return resulting_language[: -4]
 
     def compare(self, new_profil, old_profil):
         # думаешь, может сделать из new_profil, old_profil снова словарики, чтобы быстрее было?
