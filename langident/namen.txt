@@ -1,0 +1,9 @@
+﻿englisch.txt
+german.txt
+finnisch.txt
+italienisch.txt
+rumanisch.txt
+tschechisch.txt
+ungarisch.txt
+russisch.txt
+turkisch.txt
