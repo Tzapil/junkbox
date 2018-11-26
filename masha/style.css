@@ -1,0 +1,42 @@
+body {
+  margin: 40px;
+  font: 16px Helvetica, Sans-Serif;
+  line-height: 24px;
+  font-family: 'Montserrat', sans-serif;
+  background: green;
+}
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat (3, 1fr);
+  grid-template-rows: repeat (3, 100px);
+  /* background-color: #fff; */
+  color: #000;
+}
+.info-container {
+  width: 700px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 5px;
+  padding: 20px;
+  margin: auto;
+  font-size: 100%;
+}
+.title {
+  grid-area: 2 / 2;
+  text-align: center;
+  color: #FF0000;
+}
+.img {
+  grid-area: 2 / 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.picture_scale {
+  width: 80%;
+  border-radius: 3vw;
+}
+.p {
+  grid-area: 2 / 2;
+  text-align: center;
+}
