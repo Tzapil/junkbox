@@ -4,19 +4,22 @@ n = int(input())
 result = []
 
 vowels = re.compile(r'[aeoiu]')
+vowel = set("aeiou") 
 
 def count_vowels(string):
-    vows = re.findall(vowels, string)
-    return (len(vows), vows[-1])
-
-def pop_2(arr):
-    fp = arr.pop()
-    sp = arr.pop()
-
-    return (fp, sp)
+    count = 0
+    last = ''
+    for alphabet in string:
+        if alphabet in vowel: 
+            count += 1
+            last = alphabet
+    return (count, last)
 
 if n >=4:
     words = {}
+    second_parts = []
+    first_parts = []
+
     for i in range(n):
         word = input()
         vows, last = count_vowels(word)
@@ -27,32 +30,29 @@ if n >=4:
 
         hm = words[vows]
         if last not in hm:
-            hm[last] = []
-
-        words[vows]['array'].append(word)
-        hm[last].append(word)
+            hm[last] = [word]
+            words[vows]['array'].append(word)
+        else:
+            get = False
+            for v in hm[last]:
+                if v != word:
+                    second_parts.append((v, word))
+                    hm[last].remove(v)
+                    words[vows]['array'].remove(v)
+                    get = True
+                    break
+            if not get:
+                hm[last].append(word)
+                words[vows]['array'].append(word)
     
-    second_parts = []
-    first_parts = []
     for l in words:
-        for v in words[l]:
-            arr = words[l][v]
-            if v == 'array':
-                continue
-
-            while len(arr) >= 2:
-                fp, sp = pop_2(arr)
-                second_parts.append((fp, sp))
-
-                words[l]['array'].remove(fp)
-                words[l]['array'].remove(sp)
-        
         arr = words[l]['array']
         while len(arr) >= 2:
-            fp, sp = pop_2(arr)
+            fp = arr.pop()
+            sp = arr.pop()
             first_parts.append((fp, sp))
 
-    while (len(second_parts) + len(first_parts)) >= 1:
+    while len(second_parts) >= 1 and (len(second_parts) + len(first_parts)) > 1:
         fp = None
         if len(first_parts) == 0:
             fp = second_parts.pop()
