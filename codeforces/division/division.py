@@ -13,15 +13,11 @@ def divisiors(num):
     return res
 
 def func():
-    if a[0] == 1:
-        print(1)
-        return
-    else:
-        res = divisiors(a[0])
-        for j in range(1, n):
-            res = {x for x in res if a[j] % x == 0}
-            if len(res) == 0 or (len(res) == 1 and 1 in res):
-                print(len(res))
-                return
+    res = divisiors(a[0])
+    for j in range(1, n):
+        res = {x for x in res if a[j] % x == 0}
+        if len(res) == 0 or (len(res) == 1 and 1 in res):
+            print(len(res))
+            return
     print(len(res))
 func()
