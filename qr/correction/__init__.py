@@ -3,6 +3,11 @@ table = (
     (152, 128, 104, 72)     # 1
 )
 
+from .GF import GF_reverse, GF
+
+gf_reverse = GF_reverse()
+gf = GF()
+
 class Correction:
     coefficents = {
         7: [87, 229, 146, 149, 238, 102, 21],
@@ -23,13 +28,46 @@ class Correction:
     def __init__(self, bytes_count):
         self.bytes_count = bytes_count
 
-    def encode(self, block):
-        coefficents = self.coefficents[self.bytes_count]
-        block_bytes = block + [0 for i in range(self.bytes_count)]
+    def join(self, blocks, correction_codes):
+        blocks_count = len(blocks)
+        bytes_count = len(blocks[0])
+        result = []
+        for i in range(bytes_count):
+            for j in range(blocks_count):
+                result.append(blocks[j][i])
 
-        for i in range(self.bytes_count):
-            A = block_bytes.pop(0)
-            block_bytes.append(0)
-            if A == 0:
-                continue
+        blocks_count = len(correction_codes)
+        bytes_count = self.bytes_count
+        for i in range(bytes_count):
+            for j in range(blocks_count):
+                result.append(correction_codes[j][i])
+        
+        return result
+
+    def encode(self, blocks):
+        coefficents = self.coefficents[self.bytes_count]
+
+        result = []
+        for block in blocks:
+            result_array = [x for x in block] + [0 for _ in range(max(0, self.bytes_count - len(block)))]
+
+            length = len(result_array)
+
+            for i in range(len(block)):
+                A = result_array.pop(0)
+                result_array.append(0)
+                if A == 0:
+                    continue
+
+                B = gf_reverse[A]
+
+                polinom = [gf[(x + B) % 255] for x in coefficents]
+                
+                for i in range(len(polinom)):
+                    result_array[i] = result_array[i] ^ polinom[i]
+            result.append(result_array[:self.bytes_count])
+        
+        return self.join(blocks, result)
+
+
             

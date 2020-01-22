@@ -1,5 +1,6 @@
 from encoding.alphabet import Alphabet
 from correction import Correction
+from matrix import Matrix
 
 def main():
     message = 'HELLO'
@@ -52,6 +53,20 @@ def main():
     # QR v1 and LOW quality = 7
     correction = Correction(7)
     correction_result = correction.encode(blocks)
+
+    print('CORRECTION RESULT=', correction_result)
+    # QR v2 and HIGH quality = 28
+    correction2 = Correction(28)
+    correction_check = correction2.encode([[64, 196, 132, 84, 196, 196, 242, 194, 4, 132, 20, 37, 34, 16, 236, 17]])
+    print('CORRECTION CHECK=', correction_check)
+
+    # QR v1 = 21x21
+    matrix = Matrix(21, 21)
+    matrix.add_search_codes()
+    matrix.add_sync_lines()
+    matrix.fill_with_data(correction_result)
+    print(matrix)
+
 
 
 if __name__ == '__main__':
