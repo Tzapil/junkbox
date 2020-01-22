@@ -32,6 +32,58 @@ class Matrix:
         self.add_search_code(0, self.y - 7)
         self.add_search_code(self.x - 7, 0)
 
+    def get_text(self):
+        square = b'\xe2\x96\xa0'.decode()
+        white = b'\xe2\x97\xbb'.decode()
+        result = '\n'.join([' '.join([str(x) for x in row]) for row in self.array])
+        result = result.replace('X', white).replace('0', white).replace('1', square)
+        return result
+    
+    def mask_and_correction(self):
+        # LOW + 0 MASK
+        code = '111011111000100'
+
+        # ALWAYS BLACK
+        self.array[self.y - 8][8] = 1
+
+        self.mask_upper(code)
+        self.mask_lower(code)
+
+    def mask_upper(self, code):
+        y = 8
+        x = 8
+        step = 0
+        for i in range(8):
+            if self.array[y][i] == 'X':
+                self.array[y][i] = code[step]
+                step += 1
+
+        for i in range(8, -1, -1):
+            if self.array[i][x] == 'X':
+                self.array[i][x] = code[step]
+                step += 1
+
+    def mask_lower(self, code):
+        y = 8
+        x = 8
+        step = 0
+        for i in range(7):
+            if self.array[self.y - 1 - i][x] == 'X':
+                self.array[self.y - 1 - i][x] = code[step]
+                step += 1
+
+        for i in range(7, -1, -1):
+            if self.array[y][self.x - 1 - i] == 'X':
+                self.array[y][self.x - 1 - i] = code[step]
+                step += 1
+
+    def mask(self, x, y, value):
+        if (x + y) % 2 == 0:
+            if value == 1:
+                return 0
+            return 1
+        return value
+
     def add_search_code(self, x, y):
         n = 7
         for i in range(7):
@@ -66,7 +118,8 @@ class Matrix:
                 setted = False
                 while not setted:
                     if self.array[y][x] == 'X':
-                        self.array[y][x] = int(step)
+                        # int(step)
+                        self.array[y][x] = self.mask(x, y, int(bit))
                         setted = True
 
                     if v_direction == 'up':

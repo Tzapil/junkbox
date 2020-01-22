@@ -64,8 +64,10 @@ def main():
     matrix = Matrix(21, 21)
     matrix.add_search_codes()
     matrix.add_sync_lines()
+    matrix.mask_and_correction()
     matrix.fill_with_data(correction_result)
     print(matrix)
+    print(matrix.get_text())
 
 
 
