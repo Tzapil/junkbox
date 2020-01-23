@@ -69,6 +69,10 @@ def main():
     print(matrix)
     print(matrix.get_text())
 
+    svg = matrix.get_svg()
+    with open('qr.svg', 'w') as file:
+        file.write(svg)
+
 
 
 if __name__ == '__main__':

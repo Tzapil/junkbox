@@ -38,6 +38,25 @@ class Matrix:
         result = '\n'.join([' '.join([str(x) for x in row]) for row in self.array])
         result = result.replace('X', white).replace('0', white).replace('1', square)
         return result
+
+    def get_svg(self):
+        size = 500
+        length = 21
+        point_size = size // (length + 4)
+        point_t = '<rect fill="{color}" x="{x}px" y="{y}px" width="{w}px" height="{h}px"/>'
+        array = []
+        for y, row in enumerate(self.array):
+            r = []
+            for x, point in enumerate(row):
+                # 0 "white"
+                # 1 "black"
+                color = "white"
+                if point == 1:
+                    color = "black"
+                r.append(point_t.format(color=color, w=point_size, h=point_size, x=(x + 2) * point_size, y=(y + 2) * point_size))
+            array.append(''.join(r))
+        field = ''.join(array)
+        return f'<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"  height="{size}px" width="{size}px">{field}</svg>'
     
     def mask_and_correction(self):
         # LOW + 0 MASK
@@ -55,12 +74,12 @@ class Matrix:
         step = 0
         for i in range(8):
             if self.array[y][i] == 'X':
-                self.array[y][i] = code[step]
+                self.array[y][i] = int(code[step])
                 step += 1
 
         for i in range(8, -1, -1):
             if self.array[i][x] == 'X':
-                self.array[i][x] = code[step]
+                self.array[i][x] = int(code[step])
                 step += 1
 
     def mask_lower(self, code):
@@ -69,12 +88,12 @@ class Matrix:
         step = 0
         for i in range(7):
             if self.array[self.y - 1 - i][x] == 'X':
-                self.array[self.y - 1 - i][x] = code[step]
+                self.array[self.y - 1 - i][x] = int(code[step])
                 step += 1
 
         for i in range(7, -1, -1):
             if self.array[y][self.x - 1 - i] == 'X':
-                self.array[y][self.x - 1 - i] = code[step]
+                self.array[y][self.x - 1 - i] = int(code[step])
                 step += 1
 
     def mask(self, x, y, value):
