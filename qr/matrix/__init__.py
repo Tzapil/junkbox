@@ -8,6 +8,16 @@ search_code_pattern = [
     [1, 1, 1, 1, 1, 1, 1],
 ]
 
+masks = [
+    lambda x, y: (x + y) % 2,
+    lambda x, y: y % 2,
+    lambda x, y: x % 3,
+    lambda x, y: (x + y) % 3,
+    lambda x, y: (x // 3 + y // 2) % 2,
+    lambda x, y: (((x * y) % 2) + ((x * y) % 3)) % 2,
+    lambda x, y: (((x * y) % 3) + ((x * y) % 2)) % 2,
+]
+
 class Matrix:
     def __init__(self, x, y):
         self.x = x
@@ -96,8 +106,9 @@ class Matrix:
                 self.array[y][self.x - 1 - i] = int(code[step])
                 step += 1
 
-    def mask(self, x, y, value):
-        if (x + y) % 2 == 0:
+    def mask(self, x, y, value, version=0):
+        current_mask = masks[version]
+        if current_mask(x, y) == 0:
             if value == 1:
                 return 0
             return 1
@@ -132,15 +143,18 @@ class Matrix:
 
         for byte in data:
             s_byte = bin(byte)[2:].zfill(8)
+            print('NEXT_BYTE=', s_byte)
             for bit in s_byte:
                 step += 1
                 setted = False
                 while not setted:
-                    if self.array[y][x] == 'X':
+                    isX = self.array[y][x] == 'X'
+                    if step == 7:
+                        print(x, y, int(bit), self.mask(x, y, int(bit), 0))
+                    if isX:
                         # int(step)
-                        self.array[y][x] = self.mask(x, y, int(bit))
+                        self.array[y][x] = self.mask(x, y, int(bit), 0)
                         setted = True
-
                     if v_direction == 'up':
                         if h_direction == 'left':
                             h_direction = 'right'
@@ -159,6 +173,8 @@ class Matrix:
                         if h_direction == 'left':
                             h_direction = 'right'
                             x -= 1
+                            if x == 5:
+                                x -= 1
                         elif h_direction == 'right':
                             h_direction = 'left'
                             x += 1
