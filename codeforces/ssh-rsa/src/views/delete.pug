@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  h1= "删除"
+  input(type="text" id="filename" placeholder="文档名称")
+  button(onclick='delete()') 发送
+
+
+  script.
+    function delete() {
+        filename = document.getElementById('filename').value
+        params = new URLSearchParams({
+        filename: filename,
+        encoding: document.characterSet,
+        });
+        fetch(document.location.origin + "/files?" + params.toString(), {
+        method: "DELETE",
+        }).then( r => {
+        if (!r.ok) {
+          r.text().then( t => {
+            alert(t)
+          })
+        } else {
+            alert("OK!")
+            document.location.href="/";
+        }
+        })
+    }
+  

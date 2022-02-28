@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  h1= "提交"
+  p 文档名称:
+    input(type="text" id="filename" placeholder="文档名称")
+  p 内容:
+    input(type="text" id="content" placeholder="内容")
+  button(onclick='sendContent()') 发送
+
+
+  script.
+    function sendContent() {
+      filename = document.getElementById('filename').value
+      content = document.getElementById('content').value
+      params = new URLSearchParams({
+        filename: filename,
+        encoding: document.characterSet,
+      });
+      fetch(document.location.origin + "/files?" + params.toString(), {
+        method: "PUT",
+        headers: {'Content-Type': 'application/octet-stream'},
+        body: content,
+      }).then( r => {
+        if (!r.ok) {
+          r.text().then( t => {
+            alert(t)
+          })
+        } else {
+          alert("OK!")
+          document.location.href="/";
+        }
+      })
+    }
+  

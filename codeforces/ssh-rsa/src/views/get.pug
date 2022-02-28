@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1= "下载"
+  input(type="text" id="filename" placeholder="文档名称")
+  button(onclick='downloadContent()') 发送
+
+
+  script.
+    function downloadContent() {
+        filename = document.getElementById('filename').value
+        params = new URLSearchParams({
+        filename: filename,
+        encoding: document.characterSet,
+        });
+        url = document.location.origin + "/files?" + params.toString();
+        fetch(url).then( r => {
+        if (!r.ok) {
+          r.text().then( t => {
+            alert(t)
+          })
+        } else {
+            document.location = document.location.origin + "/files?" + params.toString()
+        }
+        })
+        
+    }

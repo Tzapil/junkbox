@@ -19,8 +19,6 @@ def main():
     # 0010 ALPHABET
     # 0100 BYTES
     encoding_algorithm = '0010'
-    # 00100000001010110000101110
-
 
     # DIGITAL  = 10 bits
     # ALPHABET = 9  bits
@@ -79,43 +77,9 @@ def main():
     print(matrix)
     print(matrix.get_text())
 
-    # message = 0110000101110
-    # my_mesa = 0110000101101
-
-    # after mask
-    # 10111001101100101001001000
-    # 1011100110110010100100100010011001101010101011010010
-    result = list('10111001101100101001001000')
-    print(''.join(result))
-    joined = list(''.join([bin(byte)[2:].zfill(8) for byte in correction_result]))
-    print(''.join(joined[:len(result)]))
-    step = 0
-    x = 21
-    y = 21
-    direction = -1
-    for step in range(len(result)):
-        f = lambda x, y: (x + y) % 2
-        if f(x, y) == 0:
-            result[step] = '0' if result[step] == '1' else '1'
-            joined[step] = '0' if joined[step] == '1' else '1'
-        x += direction
-        if direction == -1:
-            direction = 1
-        else:
-            direction = -1
-            y -= 1
-    
-    print('=======')
-    print(''.join(joined[:len(result)]))
-    print(''.join(result))
-
     svg = matrix.get_svg()
     with open('qr.svg', 'w') as file:
         file.write(svg)
-
-    # after mask
-    # result = '10111001101100101001001000'
-    # 10011001101010101011010010
 
 
 
